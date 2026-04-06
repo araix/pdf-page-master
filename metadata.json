@@ -1,0 +1,5 @@
+{
+  "name": "PDF Page Master",
+  "description": "Combine PDFs, reorder pages visually with drag-and-drop, and delete unwanted pages before exporting.",
+  "requestFramePermissions": []
+}
