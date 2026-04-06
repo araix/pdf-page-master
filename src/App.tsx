@@ -17,6 +17,7 @@ import type { Annotation, PageNumberSettings, WatermarkSettings, Bookmark, Heade
 import { DEFAULT_PAGE_NUM_SETTINGS, DEFAULT_WATERMARK_SETTINGS, DEFAULT_HEADER_FOOTER } from './lib/types';
 import Modal from './components/Modal';
 import SignaturePad from './components/SignaturePad';
+import TextAnnotationPad from './components/TextAnnotationPad';
 import PageNumberConfig from './components/PageNumberConfig';
 import WatermarkConfig from './components/WatermarkConfig';
 import BookmarkEditor from './components/BookmarkEditor';
@@ -32,8 +33,17 @@ export default function App() {
   const [pages, setPages] = useState<PageInfo[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 : true);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-collapse sidebar on mobile resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) setSidebarOpen(false);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Zoom
   const [zoom, setZoom] = useState(100);
@@ -61,11 +71,13 @@ export default function App() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [signatureImage, setSignatureImage] = useState<string | null>(null);
+  const [textSettings, setTextSettings] = useState<{ text: string; fontFamily: string; fontSize: number; color: string } | null>(null);
   const [editingPageId, setEditingPageId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState<'signature' | 'redaction' | 'text' | 'highlight' | null>(null);
   const [formValues, setFormValues] = useState<Record<string, Record<string, string>>>({});
   const [fillingFormPageId, setFillingFormPageId] = useState<string | null>(null);
   const [sigTargetPageId, setSigTargetPageId] = useState<string | null>(null);
+  const [textTargetPageId, setTextTargetPageId] = useState<string | null>(null);
   const [compression, setCompression] = useState<'none' | 'medium' | 'high'>('none');
 
   // Session recovery
@@ -146,14 +158,21 @@ export default function App() {
   const removeAnnotation = useCallback((pageId: string, annId: string) => {
     setAnnotations((prev) => ({ ...prev, [pageId]: (prev[pageId] || []).filter((a) => a.id !== annId) }));
   }, []);
+  const updateAnnotation = useCallback((pageId: string, updated: Annotation) => {
+    setAnnotations((prev) => ({ ...prev, [pageId]: (prev[pageId] || []).map((a) => a.id === updated.id ? updated : a) }));
+  }, []);
 
   const startSigning = (pageId: string) => { setSigTargetPageId(pageId); setActiveModal('signature'); };
   const handleSignatureSave = (dataUrl: string) => {
     setSignatureImage(dataUrl); setActiveModal(null);
     if (sigTargetPageId) { setEditingPageId(sigTargetPageId); setEditMode('signature'); }
   };
+  const startTextAnnotation = (pageId: string) => { setTextTargetPageId(pageId); setActiveModal('textAnnotation'); };
+  const handleTextAnnotationSave = (settings: { text: string; fontFamily: string; fontSize: number; color: string }) => {
+    setTextSettings(settings); setActiveModal(null);
+    if (textTargetPageId) { setEditingPageId(textTargetPageId); setEditMode('text'); }
+  };
   const startRedacting = (pageId: string) => { setEditingPageId(pageId); setEditMode('redaction'); };
-  const startTextAnnotation = (pageId: string) => { setEditingPageId(pageId); setEditMode('text'); };
   const startHighlighting = (pageId: string) => { setEditingPageId(pageId); setEditMode('highlight'); };
   const finishEditing = () => { setEditingPageId(null); setEditMode(null); };
 
@@ -314,6 +333,7 @@ export default function App() {
           editMode={editMode}
           editingPageId={editingPageId}
           signatureImage={signatureImage}
+          textSettings={textSettings}
           annotations={annotations}
           formValues={formValues}
           fillingFormPageId={fillingFormPageId}
@@ -330,6 +350,7 @@ export default function App() {
           onFinishEditing={finishEditing}
           onAddAnnotation={addAnnotation}
           onRemoveAnnotation={removeAnnotation}
+          onUpdateAnnotation={updateAnnotation}
           onSetFormFieldValue={setFormFieldValue}
           onSetFillingFormPageId={setFillingFormPageId}
           onRotatePage={rotatePage}
@@ -351,6 +372,9 @@ export default function App() {
       {/* Modals */}
       <Modal open={activeModal === 'signature'} onClose={() => { setActiveModal(null); setSigTargetPageId(null); }} title="Create Signature" width="640px">
         <SignaturePad onSave={handleSignatureSave} onCancel={() => { setActiveModal(null); setSigTargetPageId(null); }} />
+      </Modal>
+      <Modal open={activeModal === 'textAnnotation'} onClose={() => { setActiveModal(null); setTextTargetPageId(null); }} title="Add Text" width="640px">
+        <TextAnnotationPad onSave={handleTextAnnotationSave} onCancel={() => { setActiveModal(null); setTextTargetPageId(null); }} />
       </Modal>
       <Modal open={activeModal === 'pageNumbers'} onClose={() => setActiveModal(null)} title="Page Numbers" width="480px">
         <PageNumberConfig settings={pageNumSettings} onChange={setPageNumSettings} />

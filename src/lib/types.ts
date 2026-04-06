@@ -11,6 +11,7 @@ export interface Annotation {
   text?: string;
   fontSize?: number;
   color?: string;
+  fontFamily?: string;
 }
 
 export interface FormField {

@@ -15,6 +15,7 @@ interface MainContentProps {
   editMode: 'signature' | 'redaction' | 'text' | 'highlight' | null;
   editingPageId: string | null;
   signatureImage: string | null;
+  textSettings: { text: string; fontFamily: string; fontSize: number; color: string } | null;
   annotations: Record<string, Annotation[]>;
   formValues: Record<string, Record<string, string>>;
   fillingFormPageId: string | null;
@@ -31,6 +32,7 @@ interface MainContentProps {
   onFinishEditing: () => void;
   onAddAnnotation: (pageId: string, ann: Annotation) => void;
   onRemoveAnnotation: (pageId: string, annId: string) => void;
+  onUpdateAnnotation: (pageId: string, ann: Annotation) => void;
   onSetFormFieldValue: (pageId: string, fieldName: string, value: string) => void;
   onSetFillingFormPageId: (pageId: string | null) => void;
   onRotatePage: (id: string, dir: 'cw' | 'ccw') => void;
@@ -47,11 +49,11 @@ interface MainContentProps {
 }
 
 export default function MainContent({
-  pages, isProcessing, isDraggingOver, zoom, editMode, editingPageId, signatureImage,
+  pages, isProcessing, isDraggingOver, zoom, editMode, editingPageId, signatureImage, textSettings,
   annotations, formValues, fillingFormPageId, selectedIds, selectionMode,
   pageNumSettings, watermarkSettings, headerFooter, recoveryInfo,
   onDragOver, onDragLeave, onDrop, onDropZoneClick, onFinishEditing,
-  onAddAnnotation, onRemoveAnnotation, onSetFormFieldValue, onSetFillingFormPageId,
+  onAddAnnotation, onRemoveAnnotation, onUpdateAnnotation, onSetFormFieldValue, onSetFillingFormPageId,
   onRotatePage, onDuplicatePage, onDownloadPage, onRemovePage,
   onStartSigning, onStartRedacting, onStartTextAnnotation, onStartHighlighting,
   onToggleSelection, onRestoreSession, onDiscardSession
@@ -61,7 +63,7 @@ export default function MainContent({
       {editMode && (
         <div className="edit-mode-bar">
           <span className="edit-mode-label">
-            {editMode === 'signature' && '✒️ Click on the page to place your signature'}
+            {editMode === 'signature' && '✒️ Click on the page to place your signature — you can move & resize it after'}
             {editMode === 'redaction' && '⬛ Click & drag to draw redaction rectangles'}
             {editMode === 'text' && '📝 Click on the page to add text'}
             {editMode === 'highlight' && '🟡 Click & drag to highlight'}
@@ -173,12 +175,14 @@ export default function MainContent({
 
                     {/* Annotation layer */}
                     {(pageAnns.length > 0 || isEditing) && (
-                      <AnnotationLayer 
-                        annotations={pageAnns} 
+                      <AnnotationLayer
+                        annotations={pageAnns}
                         editMode={isEditing ? editMode : null}
                         signatureImage={isEditing && editMode === 'signature' ? signatureImage : null}
-                        onAdd={(ann) => onAddAnnotation(page.id, ann)} 
-                        onRemove={(id) => onRemoveAnnotation(page.id, id)} 
+                        textSettings={isEditing && editMode === 'text' ? textSettings : null}
+                        onAdd={(ann) => onAddAnnotation(page.id, ann)}
+                        onRemove={(id) => onRemoveAnnotation(page.id, id)}
+                        onUpdate={(ann) => onUpdateAnnotation(page.id, ann)}
                       />
                     )}
 

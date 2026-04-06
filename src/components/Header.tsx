@@ -45,7 +45,9 @@ export default function Header({
           </button>
         )}
         <div className="header-brand">
-          <div className="header-brand-icon"><FileText size={18} /></div>
+          <div className="header-brand-icon">
+            <img src="/icon.svg" alt="PDF Page Master" style={{ width: '24px', height: '24px' }} />
+          </div>
           <h1>PDF Page Master</h1>
         </div>
         <button className="icon-btn about-btn header-about-desktop" onClick={() => onOpenModal('about')} title="About">

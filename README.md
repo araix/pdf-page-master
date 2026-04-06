@@ -60,6 +60,27 @@ npm run build
 
 The production-ready files will be in the `dist` directory.
 
+## Deployment
+
+### Cloudflare Pages
+
+This app can be deployed as a static site on Cloudflare Pages.
+
+1. Push your code to a Git repository (e.g., GitHub, GitLab).
+
+2. Go to [Cloudflare Pages Dashboard](https://dash.cloudflare.com/pages).
+
+3. Click "Create a project" and connect your Git repository.
+
+4. Configure the build settings:
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+   - **Root directory**: (leave empty, or `/` if needed)
+
+5. Click "Save and Deploy". Cloudflare will build and deploy your app automatically.
+
+Your PDF Page Master app will be live on Cloudflare Pages!
+
 ## Tech Stack
 
 - **React 19** with TypeScript
@@ -79,4 +100,4 @@ The production-ready files will be in the `dist` directory.
 
 ## License
 
-This project uses PDF.js (Apache 2.0) and includes Foxit and Liberation fonts. See `public/pdfjs/standard_fonts/` for font licenses.
+This project uses PDF.js (Apache 2.0). Font licenses are available in the PDF.js repository.
