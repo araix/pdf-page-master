@@ -10,37 +10,40 @@ export default function AboutModal({ onDonate }: AboutModalProps) {
     <div className="about-modal-content">
       <div className="about-section">
         <h4>PDF Page Master</h4>
-        <p className="about-version">Version 1.0.0</p>
+        <p className="about-version">Version 1.1.0</p>
         <p className="about-description">
-          A powerful browser-based PDF manipulation tool for merging, reordering, 
-          annotating, and customizing PDF documents with an intuitive drag-and-drop interface.
+          A professional-grade, privacy-focused PDF manipulation tool. 
+          Perform complex PDF tasks entirely in your browser—no files are uploaded to any server.
         </p>
       </div>
 
       <div className="about-section">
-        <h4>Features</h4>
+        <h4>Key Features</h4>
         <ul className="about-features">
-          <li>Multi-file PDF and image support</li>
-          <li>Visual page reordering and rotation</li>
-          <li>Digital signatures and annotations</li>
-          <li>Watermarks, headers, and footers</li>
-          <li>Page numbers and bookmarks</li>
-          <li>Form filling and compression</li>
+          <li>Merge, Split, and Reorder pages visually</li>
+          <li>Add Digital Signatures and Annotations</li>
+          <li>Insert Watermarks, Headers, and Footers</li>
+          <li>Manage Page Numbers and Bookmarks</li>
+          <li>Fill PDF Forms and redact sensitive info</li>
+          <li>Convert between Images and PDFs</li>
         </ul>
       </div>
 
       <div className="about-section">
-        <p className="about-copyright">
-          © {new Date().getFullYear()} PDF Page Master. All rights reserved.
+        <p className="about-site">
+          Official Site: <a href="https://pdf.araix.net/" target="_blank" rel="noopener noreferrer">pdf.araix.net</a>
         </p>
         <p className="about-tech">
-          Built with React, TypeScript, pdf-lib, and PDF.js
+          Built with React, TypeScript, and high-performance PDF engines.
+        </p>
+        <p className="about-copyright">
+          © {new Date().getFullYear()} PDF Page Master.
         </p>
       </div>
 
       <div className="about-donate">
         <button className="btn btn-primary donate-btn" onClick={onDonate}>
-          <Heart size={16} /> Support This Project
+          <Heart size={16} /> Support the Developer
         </button>
       </div>
     </div>

@@ -389,7 +389,7 @@ export default function App() {
         <HeaderFooterConfig settings={headerFooter} onChange={setHeaderFooter} />
       </Modal>
       <Modal open={activeModal === 'about'} onClose={() => setActiveModal(null)} title="About PDF Page Master" width="480px">
-        <AboutModal onDonate={() => window.open('https://github.com/sponsors', '_blank')} />
+        <AboutModal onDonate={() => window.open('https://ko-fi.com/araixrand', '_blank')} />
       </Modal>
     </div>
   );

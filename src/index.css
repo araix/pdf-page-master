@@ -1664,6 +1664,25 @@ input[type="range"]::-webkit-slider-thumb {
   font-size: 12px;
   color: var(--text-muted);
   text-align: center;
+  margin: 0;
+}
+
+.about-site {
+  text-align: center;
+  font-size: 14px;
+  margin: 0;
+}
+
+.about-site a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.about-site a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
 }
 
 .about-donate {
